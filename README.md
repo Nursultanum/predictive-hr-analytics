@@ -1,142 +1,156 @@
 # 🧠 Predictive HR Analytics
 
-## Прогноз удовлетворённости сотрудников и риска увольнения
+## Employee Satisfaction and Attrition Risk Prediction
 
-### 📌 Описание проекта
+### 📌 Project Description
 
-HR-аналитики компании **«Работа с заботой»** помогают бизнесу снижать финансовые потери, связанные с текучестью персонала. Для этого используются данные о сотрудниках и методы машинного обучения, позволяющие заранее выявлять риски и принимать управленческие решения.
+HR analysts at **“Careful Work”** help the business reduce financial losses associated with employee turnover. They leverage employee data and machine learning methods to **identify risks in advance** and support managerial decision-making.
 
-В рамках проекта решаются **две ключевые задачи HR-аналитики**:
+This project addresses **two key HR-analytics tasks**:
 
-1. **Прогноз уровня удовлетворённости сотрудника работой**
-2. **Прогноз вероятности увольнения сотрудника**
+1. **Predicting employee job satisfaction**
+2. **Predicting employee attrition**
 
-Уровень удовлетворённости (`job_satisfaction_rate`) измеряется по результатам опросов и принимает значения от **0 до 1**. Проведение таких опросов — дорогостоящий и не всегда регулярный процесс, поэтому бизнес заинтересован в **предиктивных моделях**, способных заменить или дополнить опросы.
-
----
-
-## 🎯 Цели исследования
-
-* Определить ключевые факторы, влияющие на:
-
-  * удовлетворённость сотрудников;
-  * вероятность их увольнения.
-* Построить и сравнить модели машинного обучения:
-
-  * **регрессия** — для прогнозирования `job_satisfaction_rate`;
-  * **классификация** — для прогнозирования `quit`.
-* Выбрать лучшие модели по метрикам:
-
-  * **SMAPE** — для регрессии;
-  * **ROC-AUC** — для классификации.
-* Сформулировать **практические рекомендации** для HR-департамента.
+Job satisfaction (`job_satisfaction_rate`) is measured via surveys on a **0–1 scale**. Since surveys are costly and not always frequent, the business is interested in **predictive models** to supplement or replace manual assessments.
 
 ---
 
-## 📂 Данные
+## 🎯 Research Objectives
 
-Используются три типа датасетов:
+* Identify key factors affecting:
 
-* **Тренировочные данные**:
+  * employee satisfaction
+  * attrition probability
+
+* Build and compare machine learning models:
+
+  * **Regression** — for `job_satisfaction_rate` prediction
+  * **Classification** — for `quit` prediction
+
+* Select the best models based on metrics:
+
+  * **SMAPE** — for regression
+  * **ROC-AUC** — for classification
+
+* Provide **practical HR recommendations**.
+
+---
+
+## 📂 Data
+
+Three types of datasets were used:
+
+* **Training data:**
 
   * `train_job_satisfaction_rate.csv`
   * `train_quit.csv`
-* **Тестовые признаки**:
+
+* **Test features:**
 
   * `test_features.csv`
-* **Целевые признаки теста**:
+
+* **Test targets:**
 
   * `test_target_job_satisfaction_rate.csv`
   * `test_target_quit.csv`
 
-### Основные признаки:
+### Key features:
 
-* `dept` — отдел
-* `level` — уровень должности (junior / middle / senior)
-* `workload` — рабочая нагрузка
-* `employment_years` — стаж
-* `salary` — зарплата
-* `supervisor_evaluation` — оценка руководителя
-* `last_year_promo`, `last_year_violations` — кадровая история
+* `dept` — department
+* `level` — job level (junior / middle / senior)
+* `workload` — workload
+* `employment_years` — tenure
+* `salary` — salary
+* `supervisor_evaluation` — supervisor rating
+* `last_year_promo`, `last_year_violations` — HR history
 
 ---
 
-## 🔍 Ход исследования
+## 🔍 Research Process
 
-### Задача 1 — Прогноз удовлетворённости
+### Task 1 — Predicting Job Satisfaction
 
-* Очистка данных и устранение ошибок категорий (`sinior → senior`)
-* EDA и анализ распределений
-* Корреляционный анализ (Spearman + Phik)
-* Построение единого **Pipeline** с `ColumnTransformer`
-* Сравнение моделей:
+* Data cleaning and correction (`sinior → senior`)
+* EDA and distribution analysis
+* Correlation analysis (Spearman + Phik)
+* Unified **Pipeline** with `ColumnTransformer`
+* Model comparison:
 
-  * DummyRegressor (бэйзлайн)
+  * DummyRegressor (baseline)
   * Ridge Regression
-  * **Decision Tree Regressor** (лучшая)
+  * **Decision Tree Regressor** (best)
 
-**Результаты:**
+**Results:**
 
 * CV SMAPE ≈ **15.1%**
 * Test SMAPE ≈ **13.35%**
-* Улучшение относительно бейзлайна ≈ **25 п.п.**
+* Improvement over baseline ≈ **25 percentage points**
 
 ---
 
-### Задача 2 — Прогноз увольнения
+### Task 2 — Predicting Attrition
 
-* Анализ факторов увольнения
-* Построение портрета уволившегося сотрудника
-* Проверка гипотезы о влиянии удовлетворённости на увольнение
-* Добавление нового признака:
+* Analysis of attrition factors
 
-  * `job_satisfaction_pred` — прогноз из Задачи 1
-* Сравнение моделей:
+* Employee attrition profile creation
 
-  * DummyClassifier (бэйзлайн)
+* Hypothesis testing: impact of satisfaction on quitting
+
+* Addition of a new feature:
+
+  * `job_satisfaction_pred` — prediction from Task 1
+
+* Model comparison:
+
+  * DummyClassifier (baseline)
   * Logistic Regression (L1)
   * KNN
-  * **Decision Tree Classifier** (лучшая)
+  * **Decision Tree Classifier** (best)
 
-**Результаты:**
+**Results:**
 
 * CV ROC-AUC ≈ **0.903**
 * Test ROC-AUC ≈ **0.912**
-* Превышение над бейзлайном: **+0.41**
+* Improvement over baseline: **+0.41**
 
 ---
 
-## 📊 Ключевые выводы
+## 📊 Key Findings
 
-### Факторы удовлетворённости:
+### Satisfaction factors:
 
-* **Оценка руководителя** — главный драйвер.
-* **Нарушения дисциплины** резко снижают удовлетворённость.
-* Зарплата и стаж влияют **опосредованно** через уровень и нагрузку.
+* **Supervisor evaluation** — the main driver
+* **Disciplinary violations** sharply reduce satisfaction
+* Salary and tenure have **indirect influence** through job level and workload
 
-### Факторы увольнения:
+### Attrition factors:
 
-* Уходят в основном:
+Employees who leave are mainly:
 
-  * junior-сотрудники;
-  * со стажем до 2 лет;
-  * с низкой зарплатой;
-  * без повышения;
-  * с оценкой руководителя ≤ 3.
-* Уровень удовлетворённости **статистически значимо влияет** на вероятность увольнения (p-value < 0.001).
+* Junior staff
 
----
+* Tenure ≤ 2 years
 
-## 🧩 Практическая ценность для бизнеса
+* Low salary
 
-* Ранняя идентификация **групп риска**
-* Поддержка решений HR-департамента
-* Основа для внедрения **предиктивной HR-аналитики**
-* Переход от реактивного к **проактивному управлению персоналом**
+* No promotion
+
+* Supervisor rating ≤ 3
+
+* Job satisfaction **statistically significantly affects** attrition probability (p-value < 0.001)
 
 ---
 
-## 🛠 Используемые технологии
+## 🧩 Business Value
+
+* Early identification of **risk groups**
+* Supports HR decision-making
+* Provides foundation for **predictive HR analytics**
+* Enables shift from reactive to **proactive personnel management**
+
+---
+
+## 🛠 Technologies Used
 
 * Python, pandas, NumPy
 * scikit-learn
@@ -147,6 +161,7 @@ HR-аналитики компании **«Работа с заботой»** п
 
 ---
 
-## 📌 Итог
+## 📌 Conclusion
 
-Проект демонстрирует, что методы машинного обучения позволяют эффективно прогнозировать удовлетворённость сотрудников и риск увольнения, а также формировать практические рекомендации для снижения текучести персонала. Полученные модели могут служить основой для интеллектуальных HR-систем и поддержки управленческих решений.
+The project demonstrates that **machine learning methods can effectively predict employee satisfaction and attrition risk**, and provide actionable recommendations to reduce turnover.
+The resulting models can serve as a foundation for **intelligent HR systems** that integrate prediction, visualization, and management decision support.
